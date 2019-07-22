@@ -1,0 +1,31 @@
+
+
+
+<nav class="navbar navbar-default navbar-expand-lg navbar-light ">
+
+  <%= link_to "Idea blog", root_path, class: "navbar-brand", id: "logo" %>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav navbar-right">
+    <ul class="nav navbar-nav"> 
+     
+      <li><%= link_to "New Idea", new_idea_path %></li>
+      <li><%= link_to "Ideas", ideas_path %></li>
+      <ul class="nav navbar-nav ">
+
+<% if logged_in? %>
+
+<li><%= link_to 'Log out', logout_path, method: :delete %></li>
+
+<% else %>
+
+<li><%= link_to 'Log in', login_path %></li>
+
+<li><%= link_to 'Sign up', signup_path %></li>
+
+<% end %>
+
+</ul>
+      </ul>
+    </div>
+  </div>
+</nav>   
