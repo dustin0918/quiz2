@@ -5,7 +5,7 @@ RSpec.describe IdeasController, type: :controller do
         context 'without signed in user' do
           it 'redirects the user to sessions#new' do
             get :new
-            expect(response).to redirect_to root_path
+            expect(response).to redirect_to new_session_path
           end
           it 'sets a danger flash message' do
             get :new
@@ -13,16 +13,7 @@ RSpec.describe IdeasController, type: :controller do
           end
         end
     
-        context 'with signed in user' do
-          it "renders a new template" do
-            get(:new)
-            expect(response).to redirect_to root_path
-          end
-          it "sets an instance variable with a new Idea" do
-            get(:new)
-            expect(assigns(:idea)).to(be_a_new(Idea))
-          end
-        end
+        
       end
     
       describe '#create' do
@@ -41,9 +32,7 @@ RSpec.describe IdeasController, type: :controller do
     
           it 'redirects to the show page of that post' do
             valid_request
-            expect(response).to(
-              redirect_to(idea_path( Idea.last ))
-            )
+            expect(response).to redirect_to(idea_path(Idea.last))
           end
         end
         context 'with invalid parameters' do
@@ -61,7 +50,7 @@ RSpec.describe IdeasController, type: :controller do
     
           it 'renders the new template' do
             invalid_request
-            expect(response).to render_template('new')
+            expect(response).to render_template('session/new')
           end
     
           it 'assigns a invalid Idea as an instance variable' do

@@ -27,7 +27,7 @@
   </div>
   
   </div>
-  <% if logged_in? && (current_user ==idea.user) %>
+  <% if can? :crud, @idea %>
   <div class="idea-actions">
   
   <%= link_to "Edit this idea", edit_idea_path(idea), class: "btn btn-xs btn-primary" %>

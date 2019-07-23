@@ -1,10 +1,10 @@
 class IdeasController < ApplicationController
     before_action :set_idea, only: [:edit, :update, :show, :destroy]
-    before_action :require_user, except: [:index, :show]
-    before_action :require_same_user, only: [:edit, :update, :destroy]
+    before_action :authorize!, only: [:edit, :update, :destroy]
+    before_action :authenticate_user!, except: [:index, :show]
     
     def index
-      @ideas = Idea.paginate(page: params[:page], per_page: 5)
+      @ideas = Idea.paginate(page: params[:page])
     end
     
     def new
@@ -35,6 +35,9 @@ class IdeasController < ApplicationController
     end
     
     def show
+        @review=Review.new 
+        @likes = @idea.likes.count
+        @reviews=@idea.reviews.order(created_at: :desc)
     end
     
     def destroy
@@ -52,11 +55,8 @@ class IdeasController < ApplicationController
         params.require(:idea).permit(:title, :description)
       end
     
-      def require_same_user
-        if current_user != @idea.user 
-          flash[:danger] = "You can only edit or delete your own ideas"
-          redirect_to root_path
-        end
+      def authorize!
+        redirect_to root_path, alert: 'Not Authorized' unless can?(:crud, @idea)
       end
     
   end

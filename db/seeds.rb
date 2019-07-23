@@ -1,25 +1,63 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+
+NUM_ideas = 200
+NUM_USERS = 10
+PASSWORD = "supersecret"
+
+Like.delete_all
 
 
-NUM_IDEAS =100
+Review.delete_all
+Idea.delete_all
+User.delete_all
 
-Idea.destroy_all
+super_user = User.create(
+  username: "Jon Snow",
+  email: "js@winterfell.gov",
+  password: PASSWORD
+)
 
-NUM_IDEAS.times do 
-    created_at = Faker::Date.backward(365*5)
-    i=Idea.create(
-    title: Faker::TvShows::GameOfThrones.character,
-    description: Faker::TvShows::GameOfThrones.quote,
+NUM_USERS.times do
+  first_name =  Faker::Name.first_name
+  last_name = Faker::Name.last_name
+  User.create(
+    username: Faker::TvShows::BreakingBad.character,
+    email: Faker::Internet.email,
+    password: PASSWORD
+  )
+end
+users = User.all
+
+
+
+NUM_ideas.times do
+  created_at = Faker::Date.backward(365 * 5)
+  q = Idea.create(
+    
+    title: Faker::Games::WorldOfWarcraft.hero,
+    description: Faker::Games::WorldOfWarcraft.quote,
     created_at: created_at,
-    updated_at: created_at
-    )
+    updated_at: created_at,
+    user: users.sample
+  )
+  if q.valid?
+    q.reviews = rand(0..15).times.map do
+      Review.new(
+        body: Faker::TvShows::GameOfThrones.quote,
+        user: users.sample
+      )
+    end
+    q.likers = users.shuffle.slice(0, rand(users.count))
+    
+  end
 end
 
-idea=Idea.all
-puts Cowsay.say("generated #{Idea.count} ideas", :frogs)
+ideas = Idea.all
+reviews = Review.all
+
+puts Cowsay.say("Generated #{ideas.count} ideas", :frogs)
+puts Cowsay.say("Generated #{reviews.count} reviews", :tux)
+puts Cowsay.say("Generated #{users.count} users", :stegosaurus)
+
+
+
+puts "Login with #{super_user.email} and password: #{PASSWORD}"
