@@ -14,13 +14,13 @@
 
 <% if can? :crud, @idea %>
 
-<li><%= link_to 'Log out', logout_path, method: :delete %></li>
+<li><%= link_to 'Log out', session_path, method: :delete %></li>
 
 <% else %>
 
 <li><%= link_to 'Log in', new_session_path %></li>
 
-<li><%= link_to 'Sign up', signup_path %></li>
+<li><%= link_to 'Sign up', session_path %></li>
 
 <% end %>
 

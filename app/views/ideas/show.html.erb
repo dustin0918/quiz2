@@ -1,10 +1,31 @@
-<h1><%= @idea.title %></h1>
-<p><%= @idea.description %></p>
-<p><%= @idea.created_at %></p>
-<p>
-  Created by: <%= @idea.user&.username || 'DELETED'  %>
-</p>
 
+
+<h2 align="center">Title:<%=@idea.title%></h2>
+<div class="well col-xs-8 col-xs-offset-2">
+<% if @idea.user %>
+<ul class="listing">
+    <div class ="row center">
+    <div class=" col-md-4 col-md-offset-4">
+    <li> <%= @idea.created_at %> </li>
+    <li>
+    Created by: <%= @idea.user&.username || 'DELETED'  %>
+    </li>
+    
+    <li class ="idea-title">
+    
+    </li>
+    
+    </div>
+    </div>
+    </ul>
+    <%end%>
+    
+<h4 class="center description "><strong>Description: </strong></h4>
+<hr>
+<div class="center">
+<%= simple_format(@idea.description)%>
+</div>
+<hr/>
 <div >likes: <%=  @idea.likes.count %></div>
 <% like = @idea.likes.find_by(user: current_user) %>
 <% if like.present? %>
@@ -12,13 +33,17 @@
 <% else %>
   <%= link_to "Like", idea_likes_path(@idea), method: :post%>
 <% end %>
+<div class="idea-action">
+  <% if can? :crud, @idea %>
+  <%= link_to "edit this idea",edit_idea_path(@idea),class:"btn btn-xs btn-primary"%>   
+  <%= link_to "delete this idea", idea_path(@idea), method: :delete, 
+                                    data:{confirm:"are you sure want to delete the idea"}, 
+                                    class:"btn btn-xs btn-danger"%>
+  <%= link_to "view all ideas",ideas_path,class: "btn btn-xs btn-success" %>
+  <% end%>
 
-<% if can? :crud, @idea %>
-  <%= link_to "Edit", edit_idea_path(@idea)%>
-  <%= link_to "Delete", idea_path(@idea), method: :delete, data: {confirm: "Are you sure?"} %>
-<% end %>
-<hr />
-
+</div>
+</div>
 <%= form_with(model: [@idea, @review], local: true) do |f| %>
 <% if @review.errors.any? %>
   <ul>
@@ -28,7 +53,7 @@
   </ul>
 <% end %>
 
-<div class="form-group">
+<div class=" center form-group well col-xs-8 col-xs-offset-2">
   <%= f.text_area(
   :body,
   cols: 50,
@@ -37,17 +62,22 @@
   class: "form-control"
   ) %>
 </div>
+<div class="center btn well col-xs-8 col-xs-offset-2"">
 <%= f.submit "review" %>
 <% end %>
-
-<hr />
-
-<ul class="review-list">
+</div>
+<hr/>
+<div class="center reviews well col-xs-8 col-xs-offset-2"">
+<h1><strong>Reviews</strong></h1>
+</div>
+<ul class=" center well col-xs-8 col-xs-offset-2"">
   <% @reviews.each do |review| %>
-    <li>
       <p>
         <%= review.body %> <br />
         <% if can? :crud, review %>
+         <small>
+          reviewed <%= time_ago_in_words(review.created_at) %> ago
+        </small>
         <small>
           <%= link_to(
             "Delete",
@@ -58,12 +88,10 @@
             }
           ) %>
         </small>
-        |
+       
         <% end %>
-        <small>
-          reviewed <%= time_ago_in_words(review.created_at) %> ago
-        </small>
+       
       </p>
-    </li>
+   <hr/>
   <% end %>
 </ul>
